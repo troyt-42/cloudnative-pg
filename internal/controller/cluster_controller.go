@@ -521,6 +521,7 @@ func (r *ClusterReconciler) handleSwitchover(
 				"targetPrimary", cluster.Status.TargetPrimary)
 			return nil, err
 		}
+		contextLogger.Debug("RegisterPhase done for handleSwitchover", "time", metav1.Now())
 		return nil, nil
 	}
 
