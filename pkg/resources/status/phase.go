@@ -81,8 +81,12 @@ func RegisterPhaseWithOrigCluster(
 
 	if !reflect.DeepEqual(origCluster, modifiedCluster) {
 		if err := cli.Status().Patch(ctx, modifiedCluster, client.MergeFrom(origCluster)); err != nil {
+			contextLogger.Error(err, "registerPhase, patched the status")
 			return err
 		}
+		contextLogger.Debug("registerPhase, patched the status")
+		cond := meta.FindStatusCondition(modifiedCluster.Status.Conditions, condition.Type)
+		contextLogger.Debug("registerPhase, after patch, check", "condition", cond)
 	} else {
 		contextLogger.Debug("registerPhase, found no difference to apply")
 	}
