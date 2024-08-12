@@ -102,17 +102,18 @@ var _ = Describe("Tablespaces tests", Label(tests.LabelTablespaces,
 			Expect(err).ToNot(HaveOccurred())
 		}()
 
-		DeferCleanup(func(_ SpecContext) {
-			if CurrentSpecReport().Failed() {
-				specName := CurrentSpecReport().FullText()
-				capLines := 10
-				GinkgoWriter.Printf("DUMPING tailed CLUSTER Logs with error/warning (at most %v lines ). Failed Spec: %v\n",
-					capLines, specName)
-				GinkgoWriter.Println("================================================================================")
-				saveLogs(&buffer, "cluster_logs_", strings.ReplaceAll(specName, " ", "_"), GinkgoWriter, capLines)
-				GinkgoWriter.Println("================================================================================")
-			}
-		})
+		/*		DeferCleanup(func(_ SpecContext) {
+					if CurrentSpecReport().Failed() {
+						specName := CurrentSpecReport().FullText()
+						capLines := 10
+						GinkgoWriter.Printf("DUMPING tailed CLUSTER Logs with error/warning (at most %v lines ). Failed Spec: %v\n",
+							capLines, specName)
+						GinkgoWriter.Println("================================================================================")
+						saveLogs(&buffer, "cluster_logs_", strings.ReplaceAll(specName, " ", "_"), GinkgoWriter, capLines)
+						GinkgoWriter.Println("================================================================================")
+					}
+				})
+		*/
 	}
 
 	Context("on a new cluster with tablespaces", Ordered, func() {
