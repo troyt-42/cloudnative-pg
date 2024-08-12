@@ -22,6 +22,7 @@ import (
 
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	apiv1 "github.com/cloudnative-pg/cloudnative-pg/api/v1"
@@ -87,6 +88,12 @@ func RegisterPhaseWithOrigCluster(
 		contextLogger.Debug("registerPhase, patched the status")
 		cond := meta.FindStatusCondition(modifiedCluster.Status.Conditions, condition.Type)
 		contextLogger.Debug("registerPhase, after patch, check", "condition", cond)
+		var cl apiv1.Cluster
+		err := cli.Get(ctx, types.NamespacedName{Namespace: modifiedCluster.Namespace, Name: modifiedCluster.Name}, &cl)
+		if err != nil {
+			contextLogger.Error(err, "registerPhase, checking the cluster object")
+		}
+		contextLogger.Debug("registerPhase, condition on cluster", "conditions", cl.Status.Conditions)
 	} else {
 		contextLogger.Debug("registerPhase, found no difference to apply")
 	}
