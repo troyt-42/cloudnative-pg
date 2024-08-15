@@ -1070,6 +1070,9 @@ func AssertDetachReplicaModeCluster(
 	var referenceTime time.Time
 	By("taking the reference time before the detaching", func() {
 		Eventually(func(g Gomega) {
+			cluster, err := env.GetCluster(namespace, replicaClusterName)
+			g.Expect(err).ToNot(HaveOccurred())
+			GinkgoWriter.Println("XXX cluster resource version", cluster.ResourceVersion)
 			referenceCondition, err := testsUtils.GetConditionsInClusterStatus(namespace, replicaClusterName, env,
 				apiv1.ConditionClusterReady)
 			g.Expect(err).ToNot(HaveOccurred())
@@ -1091,8 +1094,10 @@ func AssertDetachReplicaModeCluster(
 
 	By("ensuring the replica cluster got promoted and restarted", func() {
 		Eventually(func(g Gomega) {
+			GinkgoWriter.Println("retrying to get the clusterConditions on", time.Now().Format(time.RFC3339))
 			cluster, err := env.GetCluster(namespace, replicaClusterName)
 			g.Expect(err).ToNot(HaveOccurred())
+			GinkgoWriter.Println("XXX cluster resource version", cluster.ResourceVersion)
 			condition, err := testsUtils.GetConditionsInClusterStatus(namespace, cluster.Name, env,
 				apiv1.ConditionClusterReady)
 			g.Expect(err).ToNot(HaveOccurred())
